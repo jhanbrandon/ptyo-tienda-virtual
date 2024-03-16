@@ -9,6 +9,7 @@ import { signUp } from '@/firebase/auth/traditionalAuth';
 import { signInWithGooglePopup } from "@/firebase/auth/googleAuth";
 import {getAuth, onAuthStateChanged} from "firebase/auth";
 import firebase_app from "@/firebase/config";
+import { useRouter } from "next/navigation";
 
 const passwordRequirements = {
     length: (password) => password.length >= 8 && password.length <= 64,
@@ -22,6 +23,7 @@ export default function SignUpPage() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
+    const router = useRouter();
 
     const checkPassword = (password) => {
         return {
