@@ -1,12 +1,14 @@
 'use client';
 
-import { useState } from 'react';
+import {useEffect, useState} from 'react';
 import { Box, Button, TextField, Typography, Paper, List, ListItem, ListItemIcon, ListItemText } from '@mui/material';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import ErrorIcon from '@mui/icons-material/Error';
 import { Google as GoogleIcon } from '@mui/icons-material';
 import { signUp } from '@/firebase/auth/traditionalAuth';
 import { signInWithGooglePopup } from "@/firebase/auth/googleAuth";
+import {getAuth, onAuthStateChanged} from "firebase/auth";
+import firebase_app from "@/firebase/config";
 
 const passwordRequirements = {
     length: (password) => password.length >= 8 && password.length <= 64,
@@ -45,8 +47,6 @@ export default function SignUpPage() {
         const { result, error } = await signUp(email, password);
         if (error) {
             setError(error.message);
-        } else {
-            // Navega al dashboard o a la página de inicio tras el registro exitoso
         }
     };
 
@@ -54,10 +54,17 @@ export default function SignUpPage() {
         const { result, error } = await signInWithGooglePopup();
         if (error) {
             setError(error.message);
-        } else {
-            // Navega al dashboard o a la página de inicio tras el registro exitoso
         }
     };
+
+    useEffect(() => {
+        const auth = getAuth(firebase_app);
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                router.push('/');
+            }
+        });
+    }, []);
 
     return (
         <Box sx={{ height: '100vh' }}>

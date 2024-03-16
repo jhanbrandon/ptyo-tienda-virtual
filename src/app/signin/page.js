@@ -8,11 +8,14 @@ import { signIn } from "@/firebase/auth/traditionalAuth";
 import { signInWithGooglePopup } from "@/firebase/auth/googleAuth";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 import firebase_app from "@/firebase/config";
+import { useRouter } from "next/navigation";
+import Link from "next/link";
 
 export default function Page() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
+    const router = useRouter();
 
     const handleEmailChange = (event) => {
         setEmail(event.target.value);
@@ -36,13 +39,14 @@ export default function Page() {
             setError(error.message);
             return;
         }
-        console.log(result);
     };
 
     useEffect(() => {
         const auth = getAuth(firebase_app);
         onAuthStateChanged(auth, (user) => {
-            console.log(user)
+            if (user) {
+                router.push('/');
+            }
         });
     }, []);
 
@@ -85,6 +89,10 @@ export default function Page() {
                 >
                     Inicia sesión con Google
                 </Button>
+                <Typography component="p" sx={{ mt: 2 }}>
+                    ¿No tienes una cuenta?
+                    <Typography color="primary" component={Link} href="/signup">Regístrate</Typography>
+                </Typography>
             </Paper>
         </Box>
     );
